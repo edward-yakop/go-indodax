@@ -5,9 +5,7 @@ import (
 	"fmt"
 )
 
-//
-// GetTicker containts the price summary like volume, last price, open buy, open sell of an individual pair.
-//
+// GetTicker contains the price summary like volume, last price, open buy, open sell of an individual pair.
 func (cl *Client) GetTicker(pairName string) (ticker *Ticker, err error) {
 	if pairName == "" {
 		return nil, ErrInvalidPairName
@@ -36,9 +34,7 @@ func (cl *Client) GetTicker(pairName string) (ticker *Ticker, err error) {
 	return ticker, nil
 }
 
-//
-// GetOrderBook containts the order book buy and sell of an individual pair.
-//
+// GetOrderBook contains the order book buy and sell of an individual pair.
 func (cl *Client) GetOrderBook(pairName string) (orderBook *OrderBook, err error) {
 	if pairName == "" {
 		return nil, ErrInvalidPairName
@@ -62,9 +58,7 @@ func (cl *Client) GetOrderBook(pairName string) (orderBook *OrderBook, err error
 	return orderBook, nil
 }
 
-//
-// GetListTrades containts the historical trade of an individual pair.
-//
+// GetListTrades contains the historical trade of an individual pair.
 func (cl *Client) GetListTrades(pairName string) (
 	listTrade []*ListTrade, err error,
 ) {
@@ -89,9 +83,7 @@ func (cl *Client) GetListTrades(pairName string) (
 	return listTrade, nil
 }
 
-//
-// GetSummaries containts the price summary like volume, last price, open buy, open sell of all pair.
-//
+// GetSummaries contains the price summary like volume, last price, open buy, open sell of all pair.
 func (cl *Client) GetSummaries() (summaries *Summary, err error) {
 
 	urlPath := pathSummaries
@@ -108,4 +100,23 @@ func (cl *Client) GetSummaries() (summaries *Summary, err error) {
 	}
 
 	return summaries, nil
+}
+
+// GetPairs provides available pairs on exchange
+func (cl *Client) GetPairs() (pairs *Pairs, err error) {
+	urlPath := pathPairs
+	body, err := cl.curlPublic(urlPath)
+	if err != nil {
+		return nil, fmt.Errorf("GetPairs: " + err.Error())
+	}
+
+	printDebug(string(body))
+
+	pairs = &Pairs{}
+	err = pairs.UnmarshalJSON(body)
+	if err != nil {
+		return nil, fmt.Errorf("GetPairs: " + err.Error())
+	}
+
+	return pairs, nil
 }

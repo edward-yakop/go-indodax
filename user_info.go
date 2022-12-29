@@ -14,9 +14,7 @@ type respGetInfo struct {
 	Message string
 }
 
-//
-// User Info containt balance info, wallet address, user id, profile picture, username, and email of user.
-//
+// UserInfo contains balance info, wallet address, user id, profile picture, username, and email of user.
 type UserInfo struct {
 	Balance        map[string]float64
 	BalanceHold    map[string]float64
