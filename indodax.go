@@ -22,6 +22,7 @@ const (
 	pathDepth     = "/%s/depth"
 	pathSummaries = "/summaries"
 	pathTrades    = "/%s/trades"
+	pathPairs     = "/pairs"
 )
 
 const (
@@ -141,16 +142,12 @@ func jsonToMapStringString(in map[string]interface{}) (
 	return out, nil
 }
 
-//
 // timestamp return current time in milliseconds as integer.
-//
 func makeTimestamp() int64 {
 	return time.Now().UnixNano() / int64(time.Millisecond)
 }
 
-//
 // timestampAsString return current time in milliseconds as string.
-//
 func timestampAsString() string {
 	return fmt.Sprintf("%d", makeTimestamp())
 }

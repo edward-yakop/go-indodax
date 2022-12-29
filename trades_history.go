@@ -17,9 +17,7 @@ type respTradeHist struct {
 	Trades []TradeHistory
 }
 
-//
-// Trade History containt trade id, order id, type of trade match(buy/sell), AssetName, amount, price, and fee.
-//
+// TradeHistory contains trade id, order id, type of trade match(buy/sell), AssetName, amount, price, and fee.
 type TradeHistory struct {
 	TradeID   int64
 	OrderID   int64

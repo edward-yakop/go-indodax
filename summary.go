@@ -6,9 +6,7 @@ import (
 	"strings"
 )
 
-//
-// Summary containts all tickers, prices24h, and prices 7d status of all pairs.
-//
+// Summary contains all tickers, prices24h, and prices 7d status of all pairs.
 type Summary struct {
 	Tickers   map[string]*Ticker
 	Prices24h map[string]float64
