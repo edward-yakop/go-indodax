@@ -121,3 +121,22 @@ func (cl *Client) GetPairs(ctx context.Context) (pairs *Pairs, err error) {
 
 	return pairs, nil
 }
+
+// GetPriceIncrements provide price increments of each pairs on exchange
+func (cl *Client) GetPriceIncrements(ctx context.Context) (priceIncrements *PriceIncrements, err error) {
+	urlPath := pathPriceIncrements
+	body, err := cl.curlPublic(ctx, urlPath)
+	if err != nil {
+		return nil, fmt.Errorf("GetPairs: " + err.Error())
+	}
+
+	printDebug(string(body))
+
+	priceIncrements = &PriceIncrements{}
+	err = priceIncrements.UnmarshalJSON(body)
+	if err != nil {
+		return nil, fmt.Errorf("GetPriceIncrements: " + err.Error())
+	}
+
+	return priceIncrements, nil
+}

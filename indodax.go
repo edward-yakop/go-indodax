@@ -18,11 +18,12 @@ const (
 	UrlPrivate = "https://indodax.com/tapi"
 
 	// path connection to public api
-	pathTicker    = "/%s/ticker"
-	pathDepth     = "/%s/depth"
-	pathSummaries = "/summaries"
-	pathTrades    = "/%s/trades"
-	pathPairs     = "/pairs"
+	pathTicker          = "/%s/ticker"
+	pathDepth           = "/%s/depth"
+	pathSummaries       = "/summaries"
+	pathTrades          = "/%s/trades"
+	pathPairs           = "/pairs"
+	pathPriceIncrements = "/price_increments"
 )
 
 const (
