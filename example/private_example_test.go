@@ -187,13 +187,13 @@ func ExampleClient_AllOpenOrders() {
 		return
 	}
 
-	allOrdes, err := cl.AllOpenOrders(context.Background())
+	allOrders, err := cl.AllOpenOrders(context.Background())
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	fmt.Printf("AllOpenOrders response: %+v\n", allOrdes)
+	fmt.Printf("AllOpenOrders response: %+v\n", allOrders)
 }
 
 func ExampleClient_TransHistory() {

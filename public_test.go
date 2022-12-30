@@ -22,3 +22,17 @@ func TestClient_GetPairs(t *testing.T) {
 	assert.Equal(t, "idr", btcIdr.BaseCurrency, "pair.BaseCurrency")
 	assert.Equal(t, "btc", btcIdr.TradedCurrency, "pair.TradedCurrency")
 }
+
+func TestClient_GetPriceIncrements(t *testing.T) {
+	cl, err := NewClient("", "")
+	require.NoError(t, err, "NewClient")
+
+	got, err := cl.GetPriceIncrements(context.Background())
+	require.NoError(t, err)
+	require.NotNil(t, got)
+	assert.NotEmpty(t, got.Entries, "PriceIncrements.Entries")
+
+	btcIdr, ok := got.Entries["btc_idr"]
+	require.True(t, ok, "Entries[btc_idr] exists")
+	assert.Equal(t, 1000, int(btcIdr), "Entries[btc_idr] value")
+}
