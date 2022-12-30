@@ -49,7 +49,7 @@ func (UserInfo *UserInfo) UnmarshalJSON(b []byte) (err error) {
 			if err != nil {
 				return err
 			}
-			UserInfo.UserId = int(val64)
+			UserInfo.UserId = val64
 		case fieldNameProfilePicture:
 			UserInfo.ProfilePicture = fmt.Sprintf("%v", v)
 		case fieldNameEmail:

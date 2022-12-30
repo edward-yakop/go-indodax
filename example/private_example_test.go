@@ -1,6 +1,7 @@
 package indodax
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"time"
@@ -19,11 +20,11 @@ func ExampleClient_TradeBuy() {
 		return
 	}
 
-	var pairName string = "usdt_idr"
+	var pairName = "usdt_idr"
 	var price float64 = 12000
 	var amount float64 = 50000
 
-	tradeBuy, err := cl.TradeBuy(pairName, price, amount)
+	tradeBuy, err := cl.TradeBuy(context.Background(), pairName, price, amount)
 	if err != nil {
 		log.Println(err)
 		return
@@ -42,11 +43,11 @@ func ExampleClient_TradeSell() {
 		return
 	}
 
-	var pairName string = "usdt_idr"
+	var pairName = "usdt_idr"
 	var price float64 = 12000
 	var amount float64 = 50000
 
-	tradeSell, err := cl.TradeSell(pairName, price, amount)
+	tradeSell, err := cl.TradeSell(context.Background(), pairName, price, amount)
 	if err != nil {
 		log.Println(err)
 		return
@@ -65,10 +66,10 @@ func ExampleClient_CancelOrderBuy() {
 		return
 	}
 
-	var pairName string = "usdt_idr"
+	var pairName = "usdt_idr"
 	var orderId int64 = 12345
 
-	cancelBuy, err := cl.CancelOrderBuy(pairName, orderId)
+	cancelBuy, err := cl.CancelOrderBuy(context.Background(), pairName, orderId)
 	if err != nil {
 		log.Println(err)
 		return
@@ -87,10 +88,10 @@ func ExampleClient_CancelOrderSell() {
 		return
 	}
 
-	var pairName string = "usdt_idr"
+	var pairName = "usdt_idr"
 	var orderId int64 = 12345
 
-	cancelSell, err := cl.CancelOrderSell(pairName, orderId)
+	cancelSell, err := cl.CancelOrderSell(context.Background(), pairName, orderId)
 	if err != nil {
 		log.Println(err)
 		return
@@ -109,10 +110,10 @@ func ExampleClient_GetOrder() {
 		return
 	}
 
-	var pairName string = "usdt_idr"
+	var pairName = "usdt_idr"
 	var orderId int64 = 12345
 
-	getOrder, err := cl.GetOrder(pairName, orderId)
+	getOrder, err := cl.GetOrder(context.Background(), pairName, orderId)
 	if err != nil {
 		log.Println(err)
 		return
@@ -121,7 +122,7 @@ func ExampleClient_GetOrder() {
 	fmt.Printf("GetOrder response: %+v\n", getOrder)
 }
 
-func ExampleClient_TradeHitory() {
+func ExampleClient_TradeHistory() {
 	cl, err := indodax.NewClient(
 		"Key",
 		"Secret",
@@ -132,7 +133,7 @@ func ExampleClient_TradeHitory() {
 	}
 
 	// pair name is required
-	var pairName string = "usdt_idr"
+	var pairName = "usdt_idr"
 
 	// set time is optional
 	sinceTime := time.Date(
@@ -144,14 +145,14 @@ func ExampleClient_TradeHitory() {
 	var count, startTradeId, endTradeId int64 = 10, 20, 30
 
 	// order is optional
-	var sortOrder string = "asc"
-	tradeHitory, err := cl.TradeHitory(pairName, count, startTradeId, endTradeId, sortOrder, &sinceTime, &endTime)
+	var sortOrder = "asc"
+	tradeHistory, err := cl.TradeHistory(context.Background(), pairName, count, startTradeId, endTradeId, sortOrder, &sinceTime, &endTime)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	fmt.Printf("TradeHitory response: %+v\n", tradeHitory)
+	fmt.Printf("TradeHistory response: %+v\n", tradeHistory)
 }
 
 func ExampleClient_OrderHistory() {
@@ -164,10 +165,10 @@ func ExampleClient_OrderHistory() {
 		return
 	}
 
-	var pairName string = "usdt_idr"
+	var pairName = "usdt_idr"
 	var count, from int64 = 10, 20
 
-	orderHistory, err := cl.OrderHistory(pairName, count, from)
+	orderHistory, err := cl.OrderHistory(context.Background(), pairName, count, from)
 	if err != nil {
 		log.Println(err)
 		return
@@ -186,7 +187,7 @@ func ExampleClient_AllOpenOrders() {
 		return
 	}
 
-	allOrdes, err := cl.AllOpenOrders()
+	allOrdes, err := cl.AllOpenOrders(context.Background())
 	if err != nil {
 		log.Println(err)
 		return
@@ -205,7 +206,7 @@ func ExampleClient_TransHistory() {
 		return
 	}
 
-	transHistory, err := cl.TransHistory()
+	transHistory, err := cl.TransHistory(context.Background())
 	if err != nil {
 		log.Println(err)
 		return
@@ -224,7 +225,7 @@ func ExampleClient_GetInfo() {
 		return
 	}
 
-	getInfo, err := cl.GetInfo()
+	getInfo, err := cl.GetInfo(context.Background())
 	if err != nil {
 		log.Println(err)
 		return
