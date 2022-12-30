@@ -1,6 +1,7 @@
 package indodax
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -9,11 +10,9 @@ import (
 	"time"
 )
 
-//
-// This method gives user balances, user wallet, user id, username, profile picture and server's timestamp.
-//
-func (cl *Client) GetInfo() (usrInfo *UserInfo, err error) {
-	respBody, err := cl.curlPrivate(apiViewGetInfo, nil)
+// GetInfo returns user balances, user wallet, user id, username, profile picture and server's timestamp.
+func (cl *Client) GetInfo(ctx context.Context) (usrInfo *UserInfo, err error) {
+	respBody, err := cl.curlPrivate(ctx, apiViewGetInfo, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -38,37 +37,33 @@ func (cl *Client) GetInfo() (usrInfo *UserInfo, err error) {
 	return cl.Info, nil
 }
 
-//
-// This method gives list of deposits and withdrawals of all currencies
-//
-func (cl *Client) TransHistory() (transHistory *TransHistory, err error) {
-	respBody, err := cl.curlPrivate(apiViewTransactionHistory, nil)
+// TransHistory returns list of deposits and withdrawals of all currencies
+func (cl *Client) TransHistory(ctx context.Context) (transHistory *TransHistory, err error) {
+	respBody, err := cl.curlPrivate(ctx, apiViewTransactionHistory, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	printDebug(string(respBody))
 
-	respTransHistory := &respTransHistory{}
+	history := &respTransHistory{}
 
-	err = json.Unmarshal(respBody, respTransHistory)
+	err = json.Unmarshal(respBody, history)
 	if err != nil {
 		err = fmt.Errorf("TransHistory: " + err.Error())
 		return nil, err
 	}
-	if respTransHistory.Success != 1 {
-		return nil, fmt.Errorf("TransHistory: " + respTransHistory.Message)
+	if history.Success != 1 {
+		return nil, fmt.Errorf("TransHistory: " + history.Message)
 	}
 
-	printDebug(respTransHistory)
+	printDebug(history)
 
-	return respTransHistory.Return, nil
+	return history.Return, nil
 }
 
-//
-// This method gives the list of current open orders (buy and sell) by pair.
-//
-func (cl *Client) OpenOrders(pairName string) (openOrders []OpenOrders, err error) {
+// OpenOrders returns current open orders (buy and sell) by pair.
+func (cl *Client) OpenOrders(ctx context.Context, pairName string) (openOrders []OpenOrders, err error) {
 	if pairName == "" {
 		return nil, ErrInvalidPairName
 	}
@@ -76,7 +71,7 @@ func (cl *Client) OpenOrders(pairName string) (openOrders []OpenOrders, err erro
 	params := url.Values{}
 	params.Set("pair", pairName)
 
-	respBody, err := cl.curlPrivate(apiViewOpenOrders, params)
+	respBody, err := cl.curlPrivate(ctx, apiViewOpenOrders, params)
 	if err != nil {
 		return nil, err
 	}
@@ -99,11 +94,9 @@ func (cl *Client) OpenOrders(pairName string) (openOrders []OpenOrders, err erro
 	return respOpenOrders.Return.Orders, nil
 }
 
-//
-// This method gives the list of current open orders (buy and sell) all pair.
-//
-func (cl *Client) AllOpenOrders() (allOpenOrders map[string][]OpenOrders, err error) {
-	respBody, err := cl.curlPrivate(apiViewOpenOrders, nil)
+// AllOpenOrders returns the list of current open orders (buy and sell) all pair.
+func (cl *Client) AllOpenOrders(ctx context.Context) (allOpenOrders map[string][]OpenOrders, err error) {
+	respBody, err := cl.curlPrivate(ctx, apiViewOpenOrders, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -126,10 +119,9 @@ func (cl *Client) AllOpenOrders() (allOpenOrders map[string][]OpenOrders, err er
 	return respOpenOrders.Return.Orders, nil
 }
 
-//
-// This method gives information about transaction in buying and selling history
-//
-func (cl *Client) TradeHitory(
+// TradeHistory returns information about transaction in buying and selling history
+func (cl *Client) TradeHistory(
+	ctx context.Context,
 	pairName string,
 	count, startTradeID, endTradeID int64,
 	sortOrder string,
@@ -168,33 +160,32 @@ func (cl *Client) TradeHitory(
 		params.Set("end", strconv.FormatInt(endTime.Unix(), 10))
 	}
 
-	respBody, err := cl.curlPrivate(apiViewTradeHistory, params)
+	respBody, err := cl.curlPrivate(ctx, apiViewTradeHistory, params)
 	if err != nil {
 		return nil, err
 	}
 
 	printDebug(string(respBody))
 
-	respTradeHistory := &respTradeHistory{}
+	tradeHistory := &respTradeHistory{}
 
-	err = json.Unmarshal(respBody, respTradeHistory)
+	err = json.Unmarshal(respBody, tradeHistory)
 	if err != nil {
-		err = fmt.Errorf("TradeHitory: " + err.Error())
+		err = fmt.Errorf("TradeHistory: " + err.Error())
 		return nil, err
 	}
-	if respTradeHistory.Success != 1 {
-		return nil, fmt.Errorf("TradeHitory: " + respTradeHistory.Message)
+	if tradeHistory.Success != 1 {
+		return nil, fmt.Errorf("TradeHistory: " + tradeHistory.Message)
 	}
 
-	printDebug(respTradeHistory)
+	printDebug(tradeHistory)
 
-	return respTradeHistory.Return.Trades, nil
+	return tradeHistory.Return.Trades, nil
 }
 
-//
-// This method gives the list of order history (buy and sell).
-//
+// OrderHistory returns the list of order history (buy and sell).
 func (cl *Client) OrderHistory(
+	ctx context.Context,
 	pairName string,
 	count, from int64,
 ) (openOrders []OrderHistory, err error) {
@@ -212,33 +203,32 @@ func (cl *Client) OrderHistory(
 		params.Set("from", strconv.FormatInt(from, 10))
 	}
 
-	respBody, err := cl.curlPrivate(apiViewOrderHistory, params)
+	respBody, err := cl.curlPrivate(ctx, apiViewOrderHistory, params)
 	if err != nil {
 		return nil, err
 	}
 
 	printDebug(string(respBody))
 
-	respOrderHistory := &respOrderHistory{}
+	orderHistory := &respOrderHistory{}
 
-	err = json.Unmarshal(respBody, respOrderHistory)
+	err = json.Unmarshal(respBody, orderHistory)
 	if err != nil {
 		err = fmt.Errorf("OrderHistory: " + err.Error())
 		return nil, err
 	}
-	if respOrderHistory.Success != 1 {
-		return nil, fmt.Errorf("OrderHistory: " + respOrderHistory.Message)
+	if orderHistory.Success != 1 {
+		return nil, fmt.Errorf("OrderHistory: " + orderHistory.Message)
 	}
 
-	printDebug(respOrderHistory)
+	printDebug(orderHistory)
 
-	return respOrderHistory.Return.Orders, nil
+	return orderHistory.Return.Orders, nil
 }
 
-//
-// Use getOrder to get specific order details.
-//
+// GetOrder returns specific order details by pairName and orderId
 func (cl *Client) GetOrder(
+	ctx context.Context,
 	pairName string,
 	orderId int64,
 ) (getOrder *GetOrder, err error) {
@@ -253,61 +243,58 @@ func (cl *Client) GetOrder(
 		params.Set("order_id", strconv.FormatInt(orderId, 10))
 	}
 
-	respBody, err := cl.curlPrivate(apiViewGetOrder, params)
+	respBody, err := cl.curlPrivate(ctx, apiViewGetOrder, params)
 	if err != nil {
 		return nil, err
 	}
 
 	printDebug(string(respBody))
 
-	respGetOrders := &respGetOrders{}
+	getOrders := &respGetOrders{}
 
-	err = json.Unmarshal(respBody, respGetOrders)
+	err = json.Unmarshal(respBody, getOrders)
 	if err != nil {
 		err = fmt.Errorf("GetOrder: " + err.Error())
 		return nil, err
 	}
-	if respGetOrders.Success != 1 {
-		return nil, fmt.Errorf("GetOrder: " + respGetOrders.Message)
+	if getOrders.Success != 1 {
+		return nil, fmt.Errorf("GetOrder: " + getOrders.Message)
 	}
 
-	printDebug(respGetOrders)
+	printDebug(getOrders)
 
-	return respGetOrders.Return.Order, nil
+	return getOrders.Return.Order, nil
 }
 
-//
-// This method is for canceling an existing open buy order.
-//
+// CancelOrderBuy cancels an existing open buy order.
 func (cl *Client) CancelOrderBuy(
+	ctx context.Context,
 	pairName string,
 	orderId int64,
 ) (cancelOrder *CancelOrder, err error) {
-	cancelOrder, err = cl.cancelOrder("buy", pairName, orderId)
+	cancelOrder, err = cl.cancelOrder(ctx, "buy", pairName, orderId)
 	if err != nil {
 		return nil, err
 	}
 	return cancelOrder, nil
 }
 
-//
-// This method is for canceling an existing open sell order.
-//
+// CancelOrderSell cancels an existing open sell order.
 func (cl *Client) CancelOrderSell(
+	ctx context.Context,
 	pairName string,
 	orderId int64,
 ) (cancelOrder *CancelOrder, err error) {
-	cancelOrder, err = cl.cancelOrder("sell", pairName, orderId)
+	cancelOrder, err = cl.cancelOrder(ctx, "sell", pairName, orderId)
 	if err != nil {
 		return nil, err
 	}
 	return cancelOrder, nil
 }
 
-//
 // This method is for canceling an existing open order.
-//
 func (cl *Client) cancelOrder(
+	ctx context.Context,
 	method, pairName string,
 	orderId int64,
 ) (cancelOrder *CancelOrder, err error) {
@@ -323,33 +310,32 @@ func (cl *Client) cancelOrder(
 	params.Set("type", method)
 	params.Set("order_id", strconv.FormatInt(orderId, 10))
 
-	respBody, err := cl.curlPrivate(apiTradeCancelOrder, params)
+	respBody, err := cl.curlPrivate(ctx, apiTradeCancelOrder, params)
 	if err != nil {
 		return nil, err
 	}
 
 	printDebug(string(respBody))
 
-	respCancelOrder := &respCancelOrder{}
+	order := &respCancelOrder{}
 
-	err = json.Unmarshal(respBody, respCancelOrder)
+	err = json.Unmarshal(respBody, order)
 	if err != nil {
 		err = fmt.Errorf("CancelOrder Unmarshal: " + err.Error())
 		return nil, err
 	}
-	if respCancelOrder.Success != 1 {
-		return nil, fmt.Errorf("CancelOrder: " + respCancelOrder.Error)
+	if order.Success != 1 {
+		return nil, fmt.Errorf("CancelOrder: " + order.Error)
 	}
 
-	printDebug(respCancelOrder)
+	printDebug(order)
 
-	return respCancelOrder.Return, nil
+	return order.Return, nil
 }
 
-//
-// This method is for opening a new buy order
-//
+// TradeBuy opens a new buy order
 func (cl *Client) TradeBuy(
+	ctx context.Context,
 	pairName string,
 	price, amount float64,
 ) (trade *Trade, err error) {
@@ -360,6 +346,7 @@ func (cl *Client) TradeBuy(
 	}
 	assetName := keyName[1]
 	trade, err = cl.trade(
+		ctx,
 		"buy", pairName, assetName,
 		price, amount,
 	)
@@ -371,10 +358,9 @@ func (cl *Client) TradeBuy(
 	return trade, nil
 }
 
-//
-// This method is for opening a new sell order
-//
+// TradeSell opens a new sell order
 func (cl *Client) TradeSell(
+	ctx context.Context,
 	pairName string,
 	price, amount float64,
 ) (trade *Trade, err error) {
@@ -385,6 +371,7 @@ func (cl *Client) TradeSell(
 	}
 	assetName := keyName[0]
 	trade, err = cl.trade(
+		ctx,
 		"sell", pairName, assetName,
 		price, amount,
 	)
@@ -396,10 +383,9 @@ func (cl *Client) TradeSell(
 	return trade, nil
 }
 
-//
-// This method is for opening a new order
-//
+// trade opens a new order
 func (cl *Client) trade(
+	ctx context.Context,
 	method, pairName, assetName string,
 	price, amount float64,
 ) (trade *Trade, err error) {
@@ -422,25 +408,25 @@ func (cl *Client) trade(
 	params.Set("price", fmt.Sprintf("%.8f", price))
 	params.Set(assetName, fmt.Sprintf("%.8f", amount))
 
-	respBody, err := cl.curlPrivate(apiTrade, params)
+	respBody, err := cl.curlPrivate(ctx, apiTrade, params)
 	if err != nil {
 		return nil, err
 	}
 
 	printDebug(string(respBody))
 
-	respTrade := &respTrade{}
+	t := &respTrade{}
 
-	err = json.Unmarshal(respBody, respTrade)
+	err = json.Unmarshal(respBody, t)
 	if err != nil {
 		err = fmt.Errorf("trade: " + err.Error())
 		return nil, err
 	}
-	if respTrade.Success != 1 {
-		return nil, fmt.Errorf("Trade: " + respTrade.Error)
+	if t.Success != 1 {
+		return nil, fmt.Errorf("Trade: " + t.Error)
 	}
 
-	printDebug(respTrade)
+	printDebug(t)
 
-	return respTrade.Return, nil
+	return t.Return, nil
 }

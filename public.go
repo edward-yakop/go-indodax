@@ -1,19 +1,20 @@
 package indodax
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 )
 
 // GetTicker contains the price summary like volume, last price, open buy, open sell of an individual pair.
-func (cl *Client) GetTicker(pairName string) (ticker *Ticker, err error) {
+func (cl *Client) GetTicker(ctx context.Context, pairName string) (ticker *Ticker, err error) {
 	if pairName == "" {
 		return nil, ErrInvalidPairName
 	}
 
 	urlPath := fmt.Sprintf(pathTicker, pairName)
 
-	body, err := cl.curlPublic(urlPath)
+	body, err := cl.curlPublic(ctx, urlPath)
 	if err != nil {
 		return nil, fmt.Errorf("GetTicker: " + err.Error())
 	}
@@ -35,14 +36,14 @@ func (cl *Client) GetTicker(pairName string) (ticker *Ticker, err error) {
 }
 
 // GetOrderBook contains the order book buy and sell of an individual pair.
-func (cl *Client) GetOrderBook(pairName string) (orderBook *OrderBook, err error) {
+func (cl *Client) GetOrderBook(ctx context.Context, pairName string) (orderBook *OrderBook, err error) {
 	if pairName == "" {
 		return nil, ErrInvalidPairName
 	}
 
 	urlPath := fmt.Sprintf(pathDepth, pairName)
 
-	body, err := cl.curlPublic(urlPath)
+	body, err := cl.curlPublic(ctx, urlPath)
 	if err != nil {
 		return nil, fmt.Errorf("GetOrderBook: " + err.Error())
 	}
@@ -59,7 +60,7 @@ func (cl *Client) GetOrderBook(pairName string) (orderBook *OrderBook, err error
 }
 
 // GetListTrades contains the historical trade of an individual pair.
-func (cl *Client) GetListTrades(pairName string) (
+func (cl *Client) GetListTrades(ctx context.Context, pairName string) (
 	listTrade []*ListTrade, err error,
 ) {
 	if pairName == "" {
@@ -68,7 +69,7 @@ func (cl *Client) GetListTrades(pairName string) (
 
 	urlPath := fmt.Sprintf(pathTrades, pairName)
 
-	body, err := cl.curlPublic(urlPath)
+	body, err := cl.curlPublic(ctx, urlPath)
 	if err != nil {
 		return nil, fmt.Errorf("GetListTrades: " + err.Error())
 	}
@@ -84,10 +85,10 @@ func (cl *Client) GetListTrades(pairName string) (
 }
 
 // GetSummaries contains the price summary like volume, last price, open buy, open sell of all pair.
-func (cl *Client) GetSummaries() (summaries *Summary, err error) {
+func (cl *Client) GetSummaries(ctx context.Context) (summaries *Summary, err error) {
 
 	urlPath := pathSummaries
-	body, err := cl.curlPublic(urlPath)
+	body, err := cl.curlPublic(ctx, urlPath)
 	if err != nil {
 		return nil, fmt.Errorf("GetSummaries: " + err.Error())
 	}
@@ -103,9 +104,9 @@ func (cl *Client) GetSummaries() (summaries *Summary, err error) {
 }
 
 // GetPairs provides available pairs on exchange
-func (cl *Client) GetPairs() (pairs *Pairs, err error) {
+func (cl *Client) GetPairs(ctx context.Context) (pairs *Pairs, err error) {
 	urlPath := pathPairs
-	body, err := cl.curlPublic(urlPath)
+	body, err := cl.curlPublic(ctx, urlPath)
 	if err != nil {
 		return nil, fmt.Errorf("GetPairs: " + err.Error())
 	}

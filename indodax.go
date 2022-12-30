@@ -79,13 +79,13 @@ var (
 	// invalid or unknown pair's name.
 	ErrInvalidPairName = fmt.Errorf("invalid or empty pair name")
 
-	ErrInvalidOrderID = fmt.Errorf("Empty order ID")
+	ErrInvalidOrderID = fmt.Errorf("empty order ID")
 
-	ErrInvalidPrice = fmt.Errorf("Empty price")
+	ErrInvalidPrice = fmt.Errorf("empty price")
 
-	ErrInvalidAmount = fmt.Errorf("Empty amount")
+	ErrInvalidAmount = fmt.Errorf("empty amount")
 
-	ErrInvalidAssetName = fmt.Errorf("Empty asset name")
+	ErrInvalidAssetName = fmt.Errorf("empty asset name")
 )
 
 const (

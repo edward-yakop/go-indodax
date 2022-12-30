@@ -1,4 +1,4 @@
-// Package indodax provide a library for accesing Indodax API (see
+// Package indodax provide a library for accessing Indodax API (see
 // https://indodax.com/downloads/BITCOINCOID-API-DOCUMENTATION.pdf for HTTP API documentation).
 //
 // Indodax provide public and private APIs.
@@ -16,5 +16,4 @@
 // Beside passing the token and secret to NewClient or Authenticate, this
 // library also read token and secret values from environment variables
 // "INDODAX_KEY" for token and "INDODAX_SECRET" for secret.
-//
 package indodax

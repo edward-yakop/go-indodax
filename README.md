@@ -2,7 +2,7 @@
 - [Description](#description)
 - [Features](#features)
 - [Trade API Documentation](https://indodax.com/downloads/BITCOINCOID-API-DOCUMENTATION.pdf)
-- [godoc](https://godoc.org/github.com/firdasafridi/go-indodax)
+- [godoc](https://godoc.org/github.com/edward-yakop/go-indodax)
 - [Example](#example)
 
 ## Description
@@ -24,18 +24,21 @@ Private Endpoint
 - Order History
 - Open Orders
 - Trade
-- Withdraw (Comming Soon)
-
+- Withdraw (Coming Soon)
+``
 ## Example
 To start use the library you can get the repository first:
 
-`go get github.com/firdasafridi/go-indodax`
+`go get github.com/edward-yakop/go-indodax`
 
 Public Endpoint 
 ``` go
+package test
+
 import (
+	"context"
     "fmt"
-    "github.com/firdasafridi/go-indodax"
+    "github.com/edward-yakop/go-indodax"
 )
 
 func main() {
@@ -43,7 +46,7 @@ func main() {
 		"",
 		"",
 	)
-	ticker, err := cl.GetTicker("ten_idr")
+	ticker, err := cl.GetTicker(context.Background(), "ten_idr")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -53,9 +56,12 @@ func main() {
 
 Private Endpoint 
 ```go
+package test
+
 import (
+    "context"
     "fmt"
-    "github.com/firdasafridi/go-indodax"
+    "github.com/edward-yakop/go-indodax"
 )
 
 func main() {
@@ -63,7 +69,7 @@ func main() {
 		"key", 
 		"secret", 
 	)
-	tradeBuy, err := cl.TradeBuy("usdt_idr", 12000, 50000)
+	tradeBuy, err := cl.TradeBuy(context.Background(), "usdt_idr", 12000, 50000)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -71,5 +77,5 @@ func main() {
 }
 ```
 ## Notes
-- For bug report you can reffer to [this](https://github.com/firdasafridi/go-indodax/blob/master/.github/ISSUE_TEMPLATE/bug_report.md)
-- For feature request you can reffer to [this](https://github.com/firdasafridi/go-indodax/blob/master/.github/ISSUE_TEMPLATE/feature_request.md)
+- For bug report you can refer to [this](https://github.com/edward-yakop/go-indodax/blob/master/.github/ISSUE_TEMPLATE/bug_report.md)
+- For feature request you can refer to [this](https://github.com/edward-yakop/go-indodax/blob/master/.github/ISSUE_TEMPLATE/feature_request.md)
